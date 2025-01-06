@@ -412,7 +412,7 @@ const Flow = () => {
       onEdgesChange={onEdgesChange}
       onInit={setRfInstance}
       onConnect={onConnect}
-      onConnectEnd={onConnectEnd}
+      //   onConnectEnd={onConnectEnd}
       connectionLineType={ConnectionLineType.SmoothStep}
       fitView
       style={{ backgroundColor: "#F7F9FB" }}
