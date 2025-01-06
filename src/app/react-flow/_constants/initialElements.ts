@@ -1,5 +1,5 @@
 const position = { x: 0, y: 0 };
-const edgeType = "smoothstep";
+// const edgeType = "smoothstep";
 
 export const NODE_TYPES = {
   CUSTOM_NODE: "customNode",

@@ -3,9 +3,7 @@ import React from "react";
 import Flow from "./_components/ReactFlowTree";
 import { ReactFlowUserProvider } from "./context/ReactFlowUserInputContext";
 
-type Props = {};
-
-function Page({}: Props) {
+function Page() {
   return (
     <main className="h-screen w-screen">
       <ReactFlowUserProvider>

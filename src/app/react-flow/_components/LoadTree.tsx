@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import React from "react";
 import { useReactFlowInput } from "../context/ReactFlowUserInputContext";
 
@@ -55,12 +53,12 @@ function LoadTree({ setNodes, setEdges }: Props) {
   //     return { nodes, edges, context };
   //   }
 
-  function loadStatesFromTree(tree) {
-    const nodes = [];
-    const edges = [];
+  function loadStatesFromTree(tree: any) {
+    let nodes: any = [];
+    let edges: any = [];
     const context = {};
 
-    function traverse(node, parentId = null) {
+    function traverse(node: any, parentId = null) {
       nodes.push({
         id: node.id,
         data: node.data || {},
@@ -69,6 +67,7 @@ function LoadTree({ setNodes, setEdges }: Props) {
       });
 
       if (node.title || node.description) {
+        //@ts-ignore
         context[node.id] = {
           title: node.title || "",
           description: node.description || "",
@@ -86,18 +85,18 @@ function LoadTree({ setNodes, setEdges }: Props) {
       }
 
       if (node.children && node.children.length > 0) {
-        node.children.forEach((child) => traverse(child, node.id));
+        node.children.forEach((child: any) => traverse(child, node.id));
       }
     }
 
-    tree.forEach((rootNode) => traverse(rootNode));
+    tree.forEach((rootNode: any) => traverse(rootNode));
 
     const uniqueEdges = Array.from(
-      new Set(edges.map((e) => JSON.stringify(e)))
-    ).map((e) => JSON.parse(e));
+      new Set(edges.map((e: any) => JSON.stringify(e)))
+    ).map((e: any) => JSON.parse(e));
 
     return {
-      nodes: nodes.map((n) => {
+      nodes: nodes.map((n: any) => {
         return { ...n, key: n.id };
       }),
       edges: uniqueEdges.map((e) => {
