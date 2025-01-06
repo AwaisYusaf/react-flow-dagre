@@ -96,7 +96,15 @@ function LoadTree({ setNodes, setEdges }: Props) {
       new Set(edges.map((e) => JSON.stringify(e)))
     ).map((e) => JSON.parse(e));
 
-    return { nodes, edges: uniqueEdges, context };
+    return {
+      nodes: nodes.map((n) => {
+        return { ...n, key: n.id };
+      }),
+      edges: uniqueEdges.map((e) => {
+        return { ...e, key: e.id };
+      }),
+      context,
+    };
   }
 
   function loadTree() {

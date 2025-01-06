@@ -26,6 +26,7 @@ import {
 import { useReactFlowInput } from "../context/ReactFlowUserInputContext";
 import GenerateButton from "./GenerateButton";
 import LoadTree from "./LoadTree";
+import { PlusCircleIcon, Trash2Icon } from "lucide-react";
 
 const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
@@ -166,14 +167,54 @@ const Flow = () => {
     [nodes, setNodes, setEdges]
   );
 
+  //   const removeNode = useCallback(
+  //     (nodeId: any) => {
+
+  //       setNodes((prev) => prev.filter((node) => node.id !== nodeId));
+  //       setEdges((prev) =>
+  //         prev.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+  //       );
+  //     },
+  //     [setNodes, setEdges]
+  //   );
+
   const removeNode = useCallback(
-    (nodeId: any) => {
-      setNodes((prev) => prev.filter((node) => node.id !== nodeId));
-      setEdges((prev) =>
-        prev.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
-      );
+    (nodeId: string) => {
+      setNodes((prevNodes) => {
+        // Helper function to recursively find all child nodes
+        const findChildren = (parentId: string, edges: any[]) => {
+          const childNodes = edges
+            .filter((edge) => edge.source === parentId)
+            .map((edge) => edge.target);
+
+          return childNodes.reduce(
+            (acc, childId) => [
+              ...acc,
+              childId,
+              ...findChildren(childId, edges),
+            ],
+            []
+          );
+        };
+
+        // Collect all child nodes
+        const edgesSnapshot = edges; // Ensure we have access to the current edges
+        const childNodeIds = findChildren(nodeId, edgesSnapshot);
+
+        // Nodes to delete include the parent and all its children
+        const nodesToDelete = new Set([nodeId, ...childNodeIds]);
+
+        return prevNodes.filter((node) => !nodesToDelete.has(node.id));
+      });
+
+      setEdges((prevEdges) => {
+        // Remove edges connected to the deleted nodes
+        return prevEdges.filter(
+          (edge) => edge.source !== nodeId && edge.target !== nodeId
+        );
+      });
     },
-    [setNodes, setEdges]
+    [setNodes, setEdges, edges]
   );
 
   const onConnect = useCallback(
@@ -207,15 +248,15 @@ const Flow = () => {
           <div className="flex items-center space-x-2 text-xs">
             <button
               onClick={() => removeNode(id)}
-              className="bg-gray-300 rounded-md px-1.5 py-1"
+              className="bg-gray-100 hover:bg-gray-200 rounded-md px-1.5 py-1"
             >
-              Remove
+              <Trash2Icon className="text-red-500 w-4 h-auto" />
             </button>
             <button
-              className="bg-gray-300 rounded-md px-1.5 py-1"
+              className="bg-gray-100 hover:bg-gray-200 rounded-md px-1.5 py-1"
               onClick={() => addChildNode(id)}
             >
-              Add Child Node
+              <PlusCircleIcon className="text-green-600 w-4 h-auto" />
             </button>
           </div>
         </NodeToolbar>
